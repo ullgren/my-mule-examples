@@ -7,9 +7,9 @@ See src/test/resources/innerservice.wsdl
 We now  want to expose a new public interface.
 
 In the past I've done similar integrations using JBoss ESB where the flow is like this:
-1. Inbound enpoint that exposes the webservice and gives me the payload (soap body)
-2. XSLT transformation (and other enrichment) of body payload
-3. A home made action/endpoint that takes the (new) payload and calls the internal SOAP endoint.
+ 1. Inbound enpoint that exposes the webservice and gives me the payload (soap body)
+ 2. XSLT transformation (and other enrichment) of body payload
+ 3. A home made action/endpoint that takes the (new) payload and calls the internal SOAP endoint.
 https://community.jboss.org/wiki/JAX-WSBasedWebServiceClientAction
 
 I normaly find Mule very inuative and simple when it comes to WS-SOAP but unfortuanly there is no           
@@ -21,7 +21,7 @@ In this project I recreate the same excersise but using Mule ESB CE 3.3.0
 
 Things I found in this project that I wish Mule had out-of-the-box.
 
-* "Set payload" component that can handle the value as a multi-line CDATA instead of a attribute.
+ * "Set payload" component that can handle the value as a multi-line CDATA instead of a attribute.
 
 Thanks to ryan carter for helping me with this one.
 http://forum.mulesoft.org/mulesoft/topics/is_there_a_soap_client_that_does_not_require_a_service_class
