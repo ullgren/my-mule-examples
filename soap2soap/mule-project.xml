@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mule-project xmlns="http://www.mulesoft.com/tooling/project" runtimeId="org.mule.servers.3.3.0.CE">
+    <name>SOAP2SOAP</name>
+    <description>A service that exposes a WS-SOAP contract, transforms the request and calls another contract.</description>
+</mule-project>

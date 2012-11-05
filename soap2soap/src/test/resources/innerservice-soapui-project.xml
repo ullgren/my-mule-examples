@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project name="innerservice" resourceRoot="" soapui-version="3.6.1" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="EchoBinding" type="wsdl" bindingName="{http://echo.example.com/}EchoBinding" soapVersion="1_1" anonymous="optional" definition="file:/srv/ponu/Projects/mule/muletests/soap2soap/src/test/resources/innerservice.wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="file:/srv/ponu/Projects/mule/muletests/soap2soap/src/test/resources/innerservice.wsdl"><con:part><con:url>file:/srv/ponu/Projects/mule/muletests/soap2soap/src/test/resources/innerservice.wsdl</con:url><con:content><![CDATA[<definitions name="EchoService" targetNamespace="http://echo.example.com/" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://echo.example.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <types>
+    <xs:schema targetNamespace="http://echo.example.com/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="echo" type="tns:echo"/>
+      <xs:element name="echoResponse" type="tns:echoResponse"/>
+      <xs:complexType name="echo">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="echoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="return" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </types>
+  <message name="Echo_echo">
+    <part element="tns:echo" name="echo"/>
+  </message>
+  <message name="Echo_echoResponse">
+    <part element="tns:echoResponse" name="echoResponse"/>
+  </message>
+  <portType name="Echo">
+    <operation name="echo" parameterOrder="echo">
+      <input message="tns:Echo_echo"/>
+      <output message="tns:Echo_echoResponse"/>
+    </operation>
+  </portType>
+  <binding name="EchoBinding" type="tns:Echo">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="echo">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="EchoImplService">
+    <port binding="tns:EchoBinding" name="EchoImplPort">
+      <soap:address location="http://temp.uri/EchoImpl"/>
+    </port>
+  </service>
+</definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://temp.uri/EchoImpl</con:endpoint><con:endpoint>http://devws:8088/mockEchoBinding</con:endpoint></con:endpoints><con:operation isOneWay="false" action="" name="echo" bindingOperationName="echo" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://devws:8088/mockEchoBinding</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:echo="http://echo.example.com/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <echo:echo>
+         <!--Optional:-->
+         <arg0>Pontus</arg0>
+      </echo:echo>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://echo.example.com/Echo/echoRequest"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:mockService port="8088" path="/mockEchoBinding" host="devws" name="EchoBinding MockService"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.mock.WsdlMockService@require-soap-action">false</con:setting></con:settings><con:mockOperation name="echo" interface="EchoBinding" operation="echo"><con:settings/><con:dispatchPath/><con:dispatchStyle>SCRIPT</con:dispatchStyle><con:defaultResponse>Response 1</con:defaultResponse><con:response name="Response 1" encoding="UTF-8"><con:settings/><con:script>def groovyUtils = new com.eviware.soapui.support.GroovyUtils(context)
+def holder = groovyUtils.getXmlHolder( mockRequest.requestContent )
+requestContext.name = holder.getNodeValue( "//arg0" )</con:script><con:responseContent><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:echo="http://echo.example.com/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <echo:echoResponse>
+         <!--Optional:-->
+         <return>Hello ${name}</return>
+      </echo:echoResponse>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:responseContent><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://echo.example.com/Echo/echoResponse"/></con:response><con:dispatchConfig/></con:mockOperation><con:properties/></con:mockService><con:properties/><con:wssContainer/></con:soapui-project>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 
+ Licensed to ..
+ -->		
+<wsdl:definitions name='GreeterInteraction' 
+	xmlns:wsdl='http://schemas.xmlsoap.org/wsdl/' xmlns:soap='http://schemas.xmlsoap.org/wsdl/soap/' 
+	xmlns:xs='http://www.w3.org/2001/XMLSchema' 
+	xmlns:tjsr='urn:greeter:GreeterResponder:1' 
+	xmlns:tns='urn:greeter:GreeterResponder:1' 
+	targetNamespace='urn:greeter:GreeterResponder:1'>
+  <wsdl:types>
+    <xs:schema targetNamespace='urn:Greeter:GreeterResponder:1'>
+      <xs:import schemaLocation='GreeterResponder_1.0.xsd' namespace='urn:greeter:GreeterResponder:1' />
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name='GreeterRequest'>
+    <wsdl:part name='parameters' element='tjsr:GreetingRequest' />
+  </wsdl:message>
+  <wsdl:message name='GreeterResponse'>
+    <wsdl:part name='parameters' element='tjsr:GreetingResponse' />
+  </wsdl:message>
+  <wsdl:portType name='GreeterResponderInterface'>
+    <wsdl:operation name='Greeter'>
+      <wsdl:input message='tns:GreeterRequest' />
+      <wsdl:output message='tns:GreeterResponse' />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name='GreeterResponderBinding' type='tns:GreeterResponderInterface'>
+    <soap:binding style='document' transport='http://schemas.xmlsoap.org/soap/http' />
+    <wsdl:operation name='Greeter'>
+      <soap:operation soapAction='urn:greeter:GreeterResponder:1:Greeter' style='document' />
+      <wsdl:input>
+        <soap:body use='literal' parts='parameters' />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use='literal' />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name='GreeterResponderService'>
+    <wsdl:port name='GreeterResponderPort' binding='tns:GreeterResponderBinding'>
+      <soap:address location='http://tempuri.org' />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
