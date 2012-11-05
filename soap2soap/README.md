@@ -22,5 +22,7 @@ In this project I recreate the same excersise but using Mule ESB CE 3.3.0
 Things I found in this project that I wish Mule had out-of-the-box.
 
 * "Set payload" component that can handle the value as a multi-line CDATA instead of a attribute.
-* A simple "wrap payload in envelope" opteration on the SOAP component.
+
+Thanks to ryan carter for helping me with this one.
+http://forum.mulesoft.org/mulesoft/topics/is_there_a_soap_client_that_does_not_require_a_service_class
 

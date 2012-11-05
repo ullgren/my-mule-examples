@@ -42,4 +42,34 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
         	xsl-file="transform-inner2outer.xslt" encoding="UTF-8" returnClass="java.lang.String"/>
        	        
     </flow>
+    
+    <flow name="SOAP2SOAPFlow2" doc:name="SOAP-2-SOAP proxy">
+        <!--  Inbound  -->
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8082" doc:name="HTTP"/>
+        <cxf:proxy-service namespace="urn:greeter:GreeterResponder:1" service="GreeterResponderService" payload="body" 
+        	wsdlLocation="schemas/interactions/GreeterInteraction/GreeterInteraction_1.0.wsdl" 
+        	enableMuleSoapHeaders="false" doc:name="SOAP"/>        
+        	
+        <!--  Transform body : remember to set returnClass="java.lang.String" or you will bet a byte array  -->
+        <mulexml:xslt-transformer maxIdleTransformers="2" maxActiveTransformers="5" 
+        	outputEncoding="UTF-8" doc:name="Transform from outer to inner" 
+        	xsl-file="transform-outer2inner.xslt" encoding="UTF-8" returnClass="java.lang.String"/>
+        	
+		<!--  -->
+		<flow-ref name="CallRemoteEndpoint" />
+       
+         <!--  Transform back to outer format (and in doing so removing the SOAP envelope from the response). -->
+         <!-- Again remember to set returnClass="java.lang.String" or you will bet a byte array  -->
+        <mulexml:xslt-transformer maxIdleTransformers="2" maxActiveTransformers="5" 
+        	outputEncoding="UTF-8" doc:name="Transform from inner response to outer response" 
+        	xsl-file="transform-inner2outer.xslt" encoding="UTF-8" returnClass="java.lang.String"/>
+    </flow>
+    
+    <flow name="CallRemoteEndpoint">
+    	<cxf:proxy-client payload="body" enableMuleSoapHeaders="true"/>
+		<!-- Call the inner SOAP endpoint, in this case it is a mock service running in soapUI (see src/test/resources/innerservice.wsdl) -->
+		<!-- Important to set the transformer-refs to set the SOAP headers -->    
+        <http:outbound-endpoint exchange-pattern="request-response" address="http://localhost:8088/mockEchoBinding" 
+        	doc:name="HTTP" transformer-refs="SetSOAPheaders"/>
+    </flow>
 </mule>
