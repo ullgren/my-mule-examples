@@ -13,6 +13,8 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
         <add-message-property key="SOAPAction" value="&quot;Echo&quot;"/>
     </message-properties-transformer>
     
+    <!-- First attempt where I add the SOAP envelope using a set-payload component and then a simple http 
+         outbound endpoint -->
     <flow name="SOAP2SOAPFlow1" doc:name="SOAP-2-SOAP proxy">
         <!--  Inbound  -->
         <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" doc:name="HTTP"/>
@@ -30,8 +32,8 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
         <set-payload value="&lt;soapenv:Envelope xmlns:soapenv='http://schemas.xmlsoap.org/soap/envelope/'&gt; &lt;soapenv:Header/&gt; &lt;soapenv:Body&gt;#[payload] &lt;/soapenv:Body&gt; &lt;/soapenv:Envelope&gt;" 
         doc:name="Wrap Payload in SOAP envelope"/>
 		
-		<!-- Call the inner SOAP endpoint, in this case it is a mock service running in soapUI (see src/test/resources/innerservice.wsdl) -->
-		<!-- Important to set the transformer-refs to set the SOAP headers -->    
+	<!-- Call the inner SOAP endpoint, in this case it is a mock service running in soapUI (see src/test/resources/innerservice.wsdl) -->
+	<!-- Important to set the transformer-refs to set the SOAP headers -->    
         <http:outbound-endpoint exchange-pattern="request-response" address="http://localhost:8089/mockEchoBinding" 
         	doc:name="HTTP" transformer-refs="SetSOAPheaders"/>
        
@@ -43,6 +45,7 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
        	        
     </flow>
     
+    <!-- Second attempt where I use a cxf:proxy-client to build the request  -->
     <flow name="SOAP2SOAPFlow2" doc:name="SOAP-2-SOAP proxy">
         <!--  Inbound  -->
         <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8082" doc:name="HTTP"/>
@@ -55,20 +58,22 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
         	outputEncoding="UTF-8" doc:name="Transform from outer to inner" 
         	xsl-file="transform-outer2inner.xslt" encoding="UTF-8" returnClass="java.lang.String"/>
         	
-		<!--  -->
-		<flow-ref name="CallRemoteEndpoint" />
+	<!-- The call to the inner service is done in a subflow since we want the response to go back through the  -->
+        <!-- cxf:proxy-client before we transform it -->
+	<flow-ref name="CallInnerEndpoint" />
        
-         <!--  Transform back to outer format (and in doing so removing the SOAP envelope from the response). -->
+         <!--  Transform back to outer format. -->
          <!-- Again remember to set returnClass="java.lang.String" or you will bet a byte array  -->
         <mulexml:xslt-transformer maxIdleTransformers="2" maxActiveTransformers="5" 
         	outputEncoding="UTF-8" doc:name="Transform from inner response to outer response" 
         	xsl-file="transform-inner2outer.xslt" encoding="UTF-8" returnClass="java.lang.String"/>
     </flow>
     
-    <flow name="CallRemoteEndpoint">
+    <!-- Sub-flow to return the body part of the response from the inner service -->
+    <flow name="CallInnerEndpoint">
     	<cxf:proxy-client payload="body" enableMuleSoapHeaders="true"/>
-		<!-- Call the inner SOAP endpoint, in this case it is a mock service running in soapUI (see src/test/resources/innerservice.wsdl) -->
-		<!-- Important to set the transformer-refs to set the SOAP headers -->    
+	<!-- Call the inner SOAP endpoint, in this case it is a mock service running in soapUI (see src/test/resources/innerservice.wsdl) -->
+	<!-- Important to set the transformer-refs to set the SOAP headers -->    
         <http:outbound-endpoint exchange-pattern="request-response" address="http://localhost:8088/mockEchoBinding" 
         	doc:name="HTTP" transformer-refs="SetSOAPheaders"/>
     </flow>
