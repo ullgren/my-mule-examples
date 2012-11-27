@@ -6,6 +6,23 @@
 
    <xsl:output method="xml" version="1.0" encoding="UTF-8" omit-xml-declaration="yes" indent="yes" />
    
+ <xsl:template match="*">
+	  <xsl:copy>
+	    <xsl:apply-templates/>
+	  </xsl:copy>
+	</xsl:template>
+    
+  
+  <!-- Transform from outer to inner -->
+  <xsl:template match="urn:GreetingRequest">
+  	<echo:echo>
+  		<arg0>
+  			<xsl:value-of select="urn:Name"/>
+  		</arg0>
+  	</echo:echo>
+  </xsl:template> 
+
+
    <xsl:template match="echo:echoResponse">
    	  <urn:GreetingResponse>
          <urn:Greeting>
