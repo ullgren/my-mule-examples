@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tcp="http://www.mulesoft.org/schema/mule/tcp" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd 
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd 
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
+http://www.mulesoft.org/schema/mule/tcp http://www.mulesoft.org/schema/mule/tcp/current/mule-tcp.xsd ">
+    
+    <configuration>
+      <expression-language autoResolveVariables="false">
+         <import class="java.lang.String" /> <!-- We actually do not need to import java.lang classes but this is done here to show that you can do imports -->
+         <global-functions>
+            def transformIsoPayloadToUtf8() { new String(payload, "ISO-8859-1") }
+         </global-functions>
+      </expression-language>
+    </configuration>
+
+    <!-- Simply use Java inline directly in the in the code. -->
+    <!-- This works but is very verbose and there will be redundant code, especially if we have more complex transformations.  -->
+    <flow name="IconvWithoutGlobalFunction" doc:name="Global_FunctionsFlow1">
+        <vm:inbound-endpoint exchange-pattern="request-response" path="start1" doc:name="VM"/>
+        <echo-component doc:name="Echo"/>
+        <set-payload value="#[new String(payload, &quot;ISO-8859-1&quot;)]" doc:name="Set Payload as UTF-8"/>
+    </flow>
+    
+    <!-- To reduce redundant code we can define a global function and use it instead. -->
+    <flow name="IconvWithGlobalFunction" doc:name="Global_FunctionsFlow1">
+        <vm:inbound-endpoint exchange-pattern="request-response" path="start2" doc:name="VM"/>
+        <echo-component doc:name="Echo"/>
+        <set-payload value="#[transformIsoPayloadToUtf8()]" doc:name="Set Payload as UTF-8"/>
+    </flow>
+</mule>
