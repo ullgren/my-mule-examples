@@ -27,33 +27,7 @@
             </property-collection>
         </properties>
     </global-element>
-    <global-unknown index="21" unknownName="SOAP2SOAPFlow3" description="false" entity-id="global-unknown#1">
-        <content>&lt;pattern:web-service-proxy xmlns:pattern=&quot;http://www.mulesoft.org/schema/mule/pattern&quot; name=&quot;SOAP2SOAPFlow3&quot; xmlns:doc=&quot;http://www.mulesoft.org/schema/mule/documentation&quot; doc:name=&quot;SOAP2SOAP proxy using pattern&quot; inboundAddress=&quot;http://localhost:8083/GreeterResponderService&quot; outboundAddress=&quot;http://localhost:7777/mockEchoBinding&quot; wsdlFile=&quot;schemas/interactions/GreeterInteraction/GreeterInteraction_1.0.wsdl&quot; transformer-refs=&quot;proxy-transformer&quot; responseTransformer-refs=&quot;proxy-transformer&quot;/&gt;</content>
-    </global-unknown>
-    <global-element type="org.mule.tooling.ui.modules.core.global.xsltXform" name="XSLT" entity-id="XSLT#1">
-        <properties>
-            <property value="java.lang.String" name="returnClass"/>
-            <property name="ignoreBadInput"/>
-            <property value="UTF-8" name="encoding"/>
-            <property name="uriResolver"/>
-            <property name="transformerFactoryClass"/>
-            <property value="22" name="auxiliary;index"/>
-            <property name="mimeType"/>
-            <property value="22" name="auxiliary;index"/>
-            <property value="2" name="maxIdleTransformers"/>
-            <property value="5" name="maxActiveTransformers"/>
-            <property value="22" name="auxiliary;index"/>
-            <property value="22" name="auxiliary;index"/>
-            <property value="transform-pattern.xslt" name="xsl-file"/>
-            <property value="UTF-8" name="outputEncoding"/>
-            <property value="22" name="auxiliary;index"/>
-            <property value="proxy-transformer" name="name"/>
-            <property value="22" name="auxiliary;index"/>
-            <property value="22" name="auxiliary;index"/>
-            <property value="22" name="auxiliary;index"/>
-        </properties>
-    </global-element>
-    <flow SubFlow="false" name="SOAP2SOAPFlow1" entity-id="632676c8-4176-4db4-81fb-b152b51efd59">
+    <flow SubFlow="false" name="SOAP2SOAPFlow2" entity-id="95d4dbe2-28bf-449c-ab26-a1d74d5cc942">
         <properties>
             <property name="processingStrategy2"/>
             <property name="processingStrategy"/>
@@ -74,8 +48,8 @@
                     <property value="4" name="auxiliary;index"/>
                     <property name="httpLabel"/>
                     <property value="localhost" name="host"/>
-                    <property value="8081" name="port"/>
-                    <property name="path"/>
+                    <property value="8082" name="port"/>
+                    <property value="GreeterResponderService" name="path"/>
                     <property name="method"/>
                     <property value="4" name="auxiliary;index"/>
                     <property value="4" name="auxiliary;index"/>
@@ -109,7 +83,7 @@
             </endpoint>
             <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger" entity-id="Logger#1">
                 <properties>
-                    <property value="SOAP2SOAPFlow1" name="message"/>
+                    <property value="SOAP2SOAPFlow2" name="message"/>
                     <property value="INFO" name="level"/>
                     <property name="category"/>
                     <property value="5" name="auxiliary;index"/>
@@ -156,7 +130,7 @@
                     <property value="6" name="auxiliary;index"/>
                 </properties>
             </pattern>
-            <pattern type="http://www.mulesoft.org/schema/mule/xml/xslt-transformer" name="Transform from outer to inner" entity-id="XSLT#2">
+            <pattern type="http://www.mulesoft.org/schema/mule/xml/xslt-transformer" name="Transform from outer to inner" entity-id="XSLT#1">
                 <properties>
                     <property value="java.lang.String" name="returnClass"/>
                     <property name="ignoreBadInput"/>
@@ -178,122 +152,115 @@
                     <property value="7" name="auxiliary;index"/>
                 </properties>
             </pattern>
-            <pattern type="http://www.mulesoft.org/schema/mule/core/set-payload" name="Wrap Payload in SOAP envelope" entity-id="Set Payload#1">
+            <pattern type="http://www.mulesoft.org/schema/mule/core/flow-ref" name="Flow Reference" entity-id="Flow Reference#1">
                 <properties>
-                    <property value="&lt;soapenv:Envelope xmlns:soapenv='http://schemas.xmlsoap.org/soap/envelope/'&gt; &lt;soapenv:Header/&gt; &lt;soapenv:Body&gt;#[message.payload] &lt;/soapenv:Body&gt; &lt;/soapenv:Envelope&gt;" name="value"/>
+                    <property value="CallInnerEndpoint" name="name"/>
                     <property value="8" name="auxiliary;index"/>
                     <property value="8" name="auxiliary;index"/>
                     <property value="8" name="auxiliary;index"/>
+                </properties>
+            </pattern>
+            <pattern type="http://www.mulesoft.org/schema/mule/xml/xslt-transformer" name="Transform from inner response to outer response" entity-id="XSLT#2">
+                <properties>
+                    <property value="java.lang.String" name="returnClass"/>
+                    <property name="ignoreBadInput"/>
+                    <property value="UTF-8" name="encoding"/>
+                    <property name="uriResolver"/>
+                    <property name="transformerFactoryClass"/>
+                    <property value="9" name="auxiliary;index"/>
+                    <property name="mimeType"/>
+                    <property value="9" name="auxiliary;index"/>
+                    <property value="2" name="maxIdleTransformers"/>
+                    <property value="5" name="maxActiveTransformers"/>
+                    <property value="9" name="auxiliary;index"/>
+                    <property value="9" name="auxiliary;index"/>
+                    <property value="transform-inner2outer.xslt" name="xsl-file"/>
+                    <property value="UTF-8" name="outputEncoding"/>
+                    <property value="9" name="auxiliary;index"/>
+                    <property value="9" name="auxiliary;index"/>
+                    <property value="9" name="auxiliary;index"/>
+                    <property value="9" name="auxiliary;index"/>
+                </properties>
+            </pattern>
+        </lane>
+    </flow>
+    <flow SubFlow="false" name="CallInnerEndpoint" entity-id="c38025f6-f8d9-430a-8b3e-2cd03c5af9c9">
+        <properties>
+            <property name="processingStrategy2"/>
+            <property name="processingStrategy"/>
+            <property value="10" name="auxiliary;index"/>
+            <property name="bussinessEventsLabel"/>
+            <property name="tracking:enable-default-events"/>
+            <property value="10" name="auxiliary;index"/>
+            <property value="10" name="auxiliary;index"/>
+            <property value="10" name="auxiliary;index"/>
+        </properties>
+        <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#2">
+            <pattern type="http://www.mulesoft.org/schema/mule/cxf/soapComponent" name="SOAP" entity-id="SOAP#2">
+                <properties>
+                    <property name="configuration-ref"/>
+                    <property value="http://www.mulesoft.org/schema/mule/cxf/proxy-client" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+                    <property name="configuration-ref"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property name="operation"/>
+                    <property name="serviceClass"/>
+                    <property name="decoupledEndpoint"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="body" name="payload"/>
+                    <property name="port"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property name="mtomEnabled"/>
+                    <property name="wsdlLocation"/>
+                    <property value="true" name="enableMuleSoapHeaders"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
                 </properties>
             </pattern>
             <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/http/endpoint" name="HTTP" entity-id="HTTP#2">
                 <properties>
                     <property value="one-way" name="exchange-pattern"/>
                     <property value="request-response" name="exchange-pattern"/>
-                    <property value="9" name="auxiliary;index"/>
+                    <property value="12" name="auxiliary;index"/>
                     <property value="http://www.mulesoft.org/schema/mule/http/endpoint" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
-                    <property value="9" name="auxiliary;index"/>
+                    <property value="12" name="auxiliary;index"/>
                     <property name="httpLabel"/>
                     <property name="host"/>
                     <property name="port"/>
                     <property name="path"/>
                     <property name="method"/>
-                    <property value="9" name="auxiliary;index"/>
-                    <property value="9" name="auxiliary;index"/>
+                    <property value="12" name="auxiliary;index"/>
+                    <property value="12" name="auxiliary;index"/>
                     <property name="businessEventsLabel"/>
                     <property name="tracking:enable-default-events"/>
-                    <property value="9" name="auxiliary;index"/>
-                    <property value="http://localhost:7777/mockEchoBinding" name="address"/>
+                    <property value="12" name="auxiliary;index"/>
+                    <property value="http://localhost:8088/mockEchoBinding" name="address"/>
                     <property name="encoding"/>
                     <property name="disableTransportTransformer"/>
                     <property name="mimeType"/>
                     <property name="responseTimeout"/>
                     <property name="followRedirects"/>
-                    <property value="9" name="auxiliary;index"/>
-                    <property value="9" name="auxiliary;index"/>
-                    <property value="9" name="auxiliary;index"/>
+                    <property value="12" name="auxiliary;index"/>
+                    <property value="12" name="auxiliary;index"/>
+                    <property value="12" name="auxiliary;index"/>
                     <property name="connector-ref"/>
                     <property name="ref"/>
                     <property value="SetSOAPheaders" name="transformer-refs"/>
                     <property name="responseTransformer-refs"/>
-                    <property value="9" name="auxiliary;index"/>
-                    <property value="9" name="auxiliary;index"/>
-                    <property name="user"/>
-                    <property name="password"/>
-                    <property value="9" name="auxiliary;index"/>
-                    <property name="contentType"/>
-                    <property name="keep-alive"/>
-                    <property value="9" name="auxiliary;index"/>
-                    <property value="9" name="auxiliary;index"/>
-                    <property value="9" name="auxiliary;index"/>
-                </properties>
-            </endpoint>
-            <pattern type="http://www.mulesoft.org/schema/mule/xml/xslt-transformer" name="Transform from inner response to outer response" entity-id="XSLT#3">
-                <properties>
-                    <property value="java.lang.String" name="returnClass"/>
-                    <property name="ignoreBadInput"/>
-                    <property value="UTF-8" name="encoding"/>
-                    <property name="uriResolver"/>
-                    <property name="transformerFactoryClass"/>
-                    <property value="10" name="auxiliary;index"/>
-                    <property name="mimeType"/>
-                    <property value="10" name="auxiliary;index"/>
-                    <property value="2" name="maxIdleTransformers"/>
-                    <property value="5" name="maxActiveTransformers"/>
-                    <property value="10" name="auxiliary;index"/>
-                    <property value="10" name="auxiliary;index"/>
-                    <property value="transform-inner2outer.xslt" name="xsl-file"/>
-                    <property value="UTF-8" name="outputEncoding"/>
-                    <property value="10" name="auxiliary;index"/>
-                    <property value="10" name="auxiliary;index"/>
-                    <property value="10" name="auxiliary;index"/>
-                    <property value="10" name="auxiliary;index"/>
-                </properties>
-            </pattern>
-        </lane>
-    </flow>
-    <flow SubFlow="false" name="SOAP2SOAPFlow2" entity-id="b680c531-66a9-4ba6-a437-096f890df37d">
-        <properties>
-            <property name="processingStrategy2"/>
-            <property name="processingStrategy"/>
-            <property value="11" name="auxiliary;index"/>
-            <property name="bussinessEventsLabel"/>
-            <property name="tracking:enable-default-events"/>
-            <property value="11" name="auxiliary;index"/>
-            <property value="11" name="auxiliary;index"/>
-            <property value="11" name="auxiliary;index"/>
-        </properties>
-        <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#2">
-            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/http/endpoint" name="HTTP" entity-id="HTTP#3">
-                <properties>
-                    <property value="one-way" name="exchange-pattern"/>
-                    <property value="request-response" name="exchange-pattern"/>
-                    <property value="12" name="auxiliary;index"/>
-                    <property value="http://www.mulesoft.org/schema/mule/http/endpoint" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
-                    <property value="12" name="auxiliary;index"/>
-                    <property name="httpLabel"/>
-                    <property value="localhost" name="host"/>
-                    <property value="8082" name="port"/>
-                    <property name="path"/>
-                    <property name="method"/>
-                    <property value="12" name="auxiliary;index"/>
-                    <property value="12" name="auxiliary;index"/>
-                    <property name="businessEventsLabel"/>
-                    <property name="tracking:enable-default-events"/>
-                    <property value="12" name="auxiliary;index"/>
-                    <property name="address"/>
-                    <property name="encoding"/>
-                    <property name="disableTransportTransformer"/>
-                    <property name="mimeType"/>
-                    <property name="responseTimeout"/>
-                    <property name="followRedirects"/>
-                    <property value="12" name="auxiliary;index"/>
-                    <property value="12" name="auxiliary;index"/>
-                    <property value="12" name="auxiliary;index"/>
-                    <property name="connector-ref"/>
-                    <property name="ref"/>
-                    <property name="transformer-refs"/>
-                    <property name="responseTransformer-refs"/>
                     <property value="12" name="auxiliary;index"/>
                     <property value="12" name="auxiliary;index"/>
                     <property name="user"/>
@@ -304,198 +271,6 @@
                     <property value="12" name="auxiliary;index"/>
                     <property value="12" name="auxiliary;index"/>
                     <property value="12" name="auxiliary;index"/>
-                </properties>
-            </endpoint>
-            <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger" entity-id="Logger#2">
-                <properties>
-                    <property value="SOAP2SOAPFlow2" name="message"/>
-                    <property value="INFO" name="level"/>
-                    <property name="category"/>
-                    <property value="13" name="auxiliary;index"/>
-                    <property value="13" name="auxiliary;index"/>
-                    <property value="13" name="auxiliary;index"/>
-                </properties>
-            </pattern>
-            <pattern type="http://www.mulesoft.org/schema/mule/cxf/soapComponent" name="SOAP" entity-id="SOAP#2">
-                <properties>
-                    <property name="configuration-ref"/>
-                    <property value="http://www.mulesoft.org/schema/mule/cxf/proxy-service" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
-                    <property name="configuration-ref"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property name="bindingId"/>
-                    <property name="port"/>
-                    <property value="urn:greeter:GreeterResponder:1" name="namespace"/>
-                    <property value="GreeterResponderService" name="service"/>
-                    <property name="onException"/>
-                    <property name="serviceClass"/>
-                    <property name="validationEnabled"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="body" name="payload"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property name="mtomEnabled"/>
-                    <property value="schemas/interactions/GreeterInteraction/GreeterInteraction_1.0.wsdl" name="wsdlLocation"/>
-                    <property value="false" name="enableMuleSoapHeaders"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
-                </properties>
-            </pattern>
-            <pattern type="http://www.mulesoft.org/schema/mule/xml/xslt-transformer" name="Transform from outer to inner" entity-id="XSLT#4">
-                <properties>
-                    <property value="java.lang.String" name="returnClass"/>
-                    <property name="ignoreBadInput"/>
-                    <property value="UTF-8" name="encoding"/>
-                    <property name="uriResolver"/>
-                    <property name="transformerFactoryClass"/>
-                    <property value="15" name="auxiliary;index"/>
-                    <property name="mimeType"/>
-                    <property value="15" name="auxiliary;index"/>
-                    <property value="2" name="maxIdleTransformers"/>
-                    <property value="5" name="maxActiveTransformers"/>
-                    <property value="15" name="auxiliary;index"/>
-                    <property value="15" name="auxiliary;index"/>
-                    <property value="transform-outer2inner.xslt" name="xsl-file"/>
-                    <property value="UTF-8" name="outputEncoding"/>
-                    <property value="15" name="auxiliary;index"/>
-                    <property value="15" name="auxiliary;index"/>
-                    <property value="15" name="auxiliary;index"/>
-                    <property value="15" name="auxiliary;index"/>
-                </properties>
-            </pattern>
-            <pattern type="http://www.mulesoft.org/schema/mule/core/flow-ref" name="Flow Reference" entity-id="Flow Reference#1">
-                <properties>
-                    <property value="CallInnerEndpoint" name="name"/>
-                    <property value="16" name="auxiliary;index"/>
-                    <property value="16" name="auxiliary;index"/>
-                    <property value="16" name="auxiliary;index"/>
-                </properties>
-            </pattern>
-            <pattern type="http://www.mulesoft.org/schema/mule/xml/xslt-transformer" name="Transform from inner response to outer response" entity-id="XSLT#5">
-                <properties>
-                    <property value="java.lang.String" name="returnClass"/>
-                    <property name="ignoreBadInput"/>
-                    <property value="UTF-8" name="encoding"/>
-                    <property name="uriResolver"/>
-                    <property name="transformerFactoryClass"/>
-                    <property value="17" name="auxiliary;index"/>
-                    <property name="mimeType"/>
-                    <property value="17" name="auxiliary;index"/>
-                    <property value="2" name="maxIdleTransformers"/>
-                    <property value="5" name="maxActiveTransformers"/>
-                    <property value="17" name="auxiliary;index"/>
-                    <property value="17" name="auxiliary;index"/>
-                    <property value="transform-inner2outer.xslt" name="xsl-file"/>
-                    <property value="UTF-8" name="outputEncoding"/>
-                    <property value="17" name="auxiliary;index"/>
-                    <property value="17" name="auxiliary;index"/>
-                    <property value="17" name="auxiliary;index"/>
-                    <property value="17" name="auxiliary;index"/>
-                </properties>
-            </pattern>
-        </lane>
-    </flow>
-    <flow SubFlow="false" name="CallInnerEndpoint" entity-id="8eb9f3ac-5a29-4e83-87f9-a0db3fcdefdf">
-        <properties>
-            <property name="processingStrategy2"/>
-            <property name="processingStrategy"/>
-            <property value="18" name="auxiliary;index"/>
-            <property name="bussinessEventsLabel"/>
-            <property name="tracking:enable-default-events"/>
-            <property value="18" name="auxiliary;index"/>
-            <property value="18" name="auxiliary;index"/>
-            <property value="18" name="auxiliary;index"/>
-        </properties>
-        <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#3">
-            <pattern type="http://www.mulesoft.org/schema/mule/cxf/soapComponent" name="SOAP" entity-id="SOAP#3">
-                <properties>
-                    <property name="configuration-ref"/>
-                    <property value="http://www.mulesoft.org/schema/mule/cxf/proxy-client" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
-                    <property name="configuration-ref"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property name="operation"/>
-                    <property name="serviceClass"/>
-                    <property name="decoupledEndpoint"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property value="body" name="payload"/>
-                    <property name="port"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property name="mtomEnabled"/>
-                    <property name="wsdlLocation"/>
-                    <property value="true" name="enableMuleSoapHeaders"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property value="19" name="auxiliary;index"/>
-                    <property value="19" name="auxiliary;index"/>
-                </properties>
-            </pattern>
-            <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/http/endpoint" name="HTTP" entity-id="HTTP#4">
-                <properties>
-                    <property value="one-way" name="exchange-pattern"/>
-                    <property value="request-response" name="exchange-pattern"/>
-                    <property value="20" name="auxiliary;index"/>
-                    <property value="http://www.mulesoft.org/schema/mule/http/endpoint" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
-                    <property value="20" name="auxiliary;index"/>
-                    <property name="httpLabel"/>
-                    <property name="host"/>
-                    <property name="port"/>
-                    <property name="path"/>
-                    <property name="method"/>
-                    <property value="20" name="auxiliary;index"/>
-                    <property value="20" name="auxiliary;index"/>
-                    <property name="businessEventsLabel"/>
-                    <property name="tracking:enable-default-events"/>
-                    <property value="20" name="auxiliary;index"/>
-                    <property value="http://localhost:7777/mockEchoBinding" name="address"/>
-                    <property name="encoding"/>
-                    <property name="disableTransportTransformer"/>
-                    <property name="mimeType"/>
-                    <property name="responseTimeout"/>
-                    <property name="followRedirects"/>
-                    <property value="20" name="auxiliary;index"/>
-                    <property value="20" name="auxiliary;index"/>
-                    <property value="20" name="auxiliary;index"/>
-                    <property name="connector-ref"/>
-                    <property name="ref"/>
-                    <property value="SetSOAPheaders" name="transformer-refs"/>
-                    <property name="responseTransformer-refs"/>
-                    <property value="20" name="auxiliary;index"/>
-                    <property value="20" name="auxiliary;index"/>
-                    <property name="user"/>
-                    <property name="password"/>
-                    <property value="20" name="auxiliary;index"/>
-                    <property name="contentType"/>
-                    <property name="keep-alive"/>
-                    <property value="20" name="auxiliary;index"/>
-                    <property value="20" name="auxiliary;index"/>
-                    <property value="20" name="auxiliary;index"/>
                 </properties>
             </endpoint>
         </lane>

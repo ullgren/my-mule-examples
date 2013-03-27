@@ -6,13 +6,6 @@
 
    <xsl:output method="xml" version="1.0" encoding="UTF-8" omit-xml-declaration="yes" indent="yes" />
    
- <xsl:template match="*">
-	  <xsl:copy>
-	    <xsl:apply-templates/>
-	  </xsl:copy>
-	</xsl:template>
-    
-  
   <!-- Transform from outer to inner -->
   <xsl:template match="urn:GreetingRequest">
   	<echo:echo>
@@ -22,7 +15,6 @@
   	</echo:echo>
   </xsl:template> 
 
-
    <xsl:template match="echo:echoResponse">
    	  <urn:GreetingResponse>
          <urn:Greeting>
@@ -30,4 +22,10 @@
          </urn:Greeting>
       </urn:GreetingResponse>
    </xsl:template>
+   
+   <xsl:template match="@*|node()">
+	  <xsl:copy>
+	    <xsl:apply-templates select="node()|@*"/>
+	  </xsl:copy>
+   </xsl:template> 
 </xsl:stylesheet>

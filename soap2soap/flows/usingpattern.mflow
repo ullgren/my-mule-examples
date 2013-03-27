@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mule-configuration xmlns="http://www.mulesoft.com/tooling/messageflow" name="UsingPattern">
+    <global-element type="org.mule.tooling.ui.modules.core.global.xsltXform" name="XSLT" entity-id="XSLT#1">
+        <properties>
+            <property value="java.lang.String" name="returnClass"/>
+            <property name="ignoreBadInput"/>
+            <property value="UTF-8" name="encoding"/>
+            <property name="uriResolver"/>
+            <property name="transformerFactoryClass"/>
+            <property value="1" name="auxiliary;index"/>
+            <property name="mimeType"/>
+            <property value="1" name="auxiliary;index"/>
+            <property value="2" name="maxIdleTransformers"/>
+            <property value="5" name="maxActiveTransformers"/>
+            <property value="1" name="auxiliary;index"/>
+            <property value="1" name="auxiliary;index"/>
+            <property value="transform-pattern.xslt" name="xsl-file"/>
+            <property value="UTF-8" name="outputEncoding"/>
+            <property value="1" name="auxiliary;index"/>
+            <property value="proxy-transformer" name="name"/>
+            <property value="1" name="auxiliary;index"/>
+            <property value="1" name="auxiliary;index"/>
+            <property value="1" name="auxiliary;index"/>
+        </properties>
+    </global-element>
+    <global-unknown index="2" unknownName="SOAP2SOAPFlow3" description="false" entity-id="global-unknown#1">
+        <content>&lt;pattern:web-service-proxy xmlns:pattern=&quot;http://www.mulesoft.org/schema/mule/pattern&quot; name=&quot;SOAP2SOAPFlow3&quot; xmlns:doc=&quot;http://www.mulesoft.org/schema/mule/documentation&quot; doc:name=&quot;SOAP2SOAP proxy using pattern&quot; inboundAddress=&quot;http://localhost:8083/GreeterResponderService&quot; outboundAddress=&quot;http://localhost:8088/mockEchoBinding&quot; wsdlFile=&quot;schemas/interactions/GreeterInteraction/GreeterInteraction_1.0.wsdl&quot; transformer-refs=&quot;proxy-transformer&quot; responseTransformer-refs=&quot;proxy-transformer&quot;/&gt;</content>
+    </global-unknown>
+    <global-unknown index="3" unknownName="SOAP2SOAPFlow4" description="false" entity-id="global-unknown#2">
+        <content>&lt;pattern:web-service-proxy xmlns:pattern=&quot;http://www.mulesoft.org/schema/mule/pattern&quot; name=&quot;SOAP2SOAPFlow4&quot; xmlns:doc=&quot;http://www.mulesoft.org/schema/mule/documentation&quot; doc:name=&quot;SOAP2SOAP proxy not changing contract&quot; inboundAddress=&quot;http://localhost:8084/echoService&quot; outboundAddress=&quot;http://localhost:8088/mockEchoBinding&quot;/&gt;</content>
+    </global-unknown>
+    <description></description>
+</mule-configuration>

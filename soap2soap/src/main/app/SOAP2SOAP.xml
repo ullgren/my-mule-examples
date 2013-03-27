@@ -1,96 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+	xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.3.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd 
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
 http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd 
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd 
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
 http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd">
-    
-    <!-- This message property transformer is used by the outbound HTTP endpoint below -->
-    <!-- It sets the SOAPAction header -->
-    <message-properties-transformer scope="outbound" name="SetSOAPheaders" doc:name="Message Properties">
-        <add-message-property key="SOAPAction" value="&quot;Echo&quot;"/>
-    </message-properties-transformer>
-    
-    <!-- First attempt where I add the SOAP envelope using a set-payload component and then a simple http 
-         outbound endpoint -->
-    <flow name="SOAP2SOAPFlow1" doc:name="SOAP-2-SOAP proxy">
-        <!--  Inbound  -->
-        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" doc:name="HTTP"/>
-        <logger level="INFO" message="SOAP2SOAPFlow1"/>
-        <cxf:proxy-service namespace="urn:greeter:GreeterResponder:1" service="GreeterResponderService" payload="body" 
-        	wsdlLocation="schemas/interactions/GreeterInteraction/GreeterInteraction_1.0.wsdl" 
-        	enableMuleSoapHeaders="false" doc:name="SOAP"/>        
-        
-        <!--  Transform body : remember to set returnClass="java.lang.String" or you will bet a byte array  -->
-        <mulexml:xslt-transformer maxIdleTransformers="2" maxActiveTransformers="5" 
-        	outputEncoding="UTF-8" doc:name="Transform from outer to inner" 
-        	xsl-file="transform-outer2inner.xslt" encoding="UTF-8" returnClass="java.lang.String"/>
-        	
 
-        <!-- Wrap payload in SOAP header and body -->
-        <set-payload value="&lt;soapenv:Envelope xmlns:soapenv='http://schemas.xmlsoap.org/soap/envelope/'&gt; &lt;soapenv:Header/&gt; &lt;soapenv:Body&gt;#[message.payload] &lt;/soapenv:Body&gt; &lt;/soapenv:Envelope&gt;" 
-        doc:name="Wrap Payload in SOAP envelope"/>        
-		
-		<!-- Call the inner SOAP endpoint, in this case it is a mock service running in soapUI (see src/test/resources/innerservice.wsdl) -->
-		<!-- Important to set the transformer-refs to set the SOAP headers -->    
-        <http:outbound-endpoint exchange-pattern="request-response" address="http://localhost:7777/mockEchoBinding" 
-        	doc:name="HTTP" transformer-refs="SetSOAPheaders"/>
-       
-         <!--  Transform back to outer format (and in doing so removing the SOAP envelope from the response). -->
-         <!-- Again remember to set returnClass="java.lang.String" or you will bet a byte array  -->
-        <mulexml:xslt-transformer maxIdleTransformers="2" maxActiveTransformers="5" 
-        	outputEncoding="UTF-8" doc:name="Transform from inner response to outer response" 
-        	xsl-file="transform-inner2outer.xslt" encoding="UTF-8" returnClass="java.lang.String"/>
-       	        
-    </flow>
-    
-    <!-- Second attempt where I use a cxf:proxy-client to build the request  -->
-    <flow name="SOAP2SOAPFlow2" doc:name="SOAP-2-SOAP proxy">
-        <!--  Inbound  -->
-        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8082" doc:name="HTTP"/>
-        <logger level="INFO" message="SOAP2SOAPFlow2"/>
-        <cxf:proxy-service namespace="urn:greeter:GreeterResponder:1" service="GreeterResponderService" payload="body" 
-        	wsdlLocation="schemas/interactions/GreeterInteraction/GreeterInteraction_1.0.wsdl" 
-        	enableMuleSoapHeaders="false" doc:name="SOAP"/>        
-        	
-        <!--  Transform body : remember to set returnClass="java.lang.String" or you will bet a byte array  -->
-        <mulexml:xslt-transformer maxIdleTransformers="2" maxActiveTransformers="5" 
-        	outputEncoding="UTF-8" doc:name="Transform from outer to inner" 
-        	xsl-file="transform-outer2inner.xslt" encoding="UTF-8" returnClass="java.lang.String"/>
-        	
-	<!-- The call to the inner service is done in a subflow since we want the response to go back through the  -->
-        <!-- cxf:proxy-client before we transform it -->
-	<flow-ref name="CallInnerEndpoint" />
-       
-         <!--  Transform back to outer format. -->
-         <!-- Again remember to set returnClass="java.lang.String" or you will bet a byte array  -->
-        <mulexml:xslt-transformer maxIdleTransformers="2" maxActiveTransformers="5" 
-        	outputEncoding="UTF-8" doc:name="Transform from inner response to outer response" 
-        	xsl-file="transform-inner2outer.xslt" encoding="UTF-8" returnClass="java.lang.String"/>
-    </flow>
-    
-    <!-- Sub-flow to return the body part of the response from the inner service -->
-    <flow name="CallInnerEndpoint">
-    	<cxf:proxy-client payload="body" enableMuleSoapHeaders="true"/>
-		<!-- Call the inner SOAP endpoint, in this case it is a mock service running in soapUI (see src/test/resources/innerservice.wsdl) -->    
-        <http:outbound-endpoint exchange-pattern="request-response" address="http://localhost:7777/mockEchoBinding" 
-        	doc:name="HTTP" transformer-refs="SetSOAPheaders"/>
-    </flow>
-       	
-   	<!-- Third attempt where we are using pattern --> 
-   	<pattern:web-service-proxy name="SOAP2SOAPFlow3" doc:name="SOAP2SOAP proxy using pattern"
-   		inboundAddress="http://localhost:8083/GreeterResponderService"
-   		outboundAddress="http://localhost:7777/mockEchoBinding" 
-   		wsdlFile="schemas/interactions/GreeterInteraction/GreeterInteraction_1.0.wsdl"
-   		transformer-refs="proxy-transformer"
-   		responseTransformer-refs="proxy-transformer"
-   		/>   
-   	<!-- Transformers used by the web-service-proxy pattern above -->
-  	<mulexml:xslt-transformer name="proxy-transformer" maxIdleTransformers="2" maxActiveTransformers="5" 
-        	outputEncoding="UTF-8" doc:name="Transform from outer to inner and back again, used by the pattern flow" 
-        	xsl-file="transform-pattern.xslt" encoding="UTF-8" returnClass="java.lang.String"/>
-     
+	<!-- This message property transformer is used by the outbound HTTP endpoint 
+		below -->
+	<!-- It sets the SOAPAction header -->
+	<message-properties-transformer scope="outbound"
+		name="SetSOAPheaders" doc:name="Message Properties">
+		<add-message-property key="SOAPAction" value="&quot;Echo&quot;" />
+	</message-properties-transformer>
+
+	<!-- SOAP proxy where we use a cxf:proxy-client to build the request -->
+	<flow name="SOAP2SOAPFlow2" doc:name="SOAP-2-SOAP proxy">
+		<!-- Inbound -->
+		<http:inbound-endpoint exchange-pattern="request-response"
+			host="localhost" port="8082" path="GreeterResponderService" doc:name="HTTP" />
+		<logger level="INFO" message="SOAP2SOAPFlow2" />
+		<cxf:proxy-service namespace="urn:greeter:GreeterResponder:1"
+			service="GreeterResponderService" payload="body"
+			wsdlLocation="schemas/interactions/GreeterInteraction/GreeterInteraction_1.0.wsdl"
+			enableMuleSoapHeaders="false" doc:name="SOAP" />
+
+		<!-- Transform body : remember to set returnClass="java.lang.String" or 
+			you will bet a byte array -->
+		<mulexml:xslt-transformer
+			maxIdleTransformers="2" maxActiveTransformers="5" outputEncoding="UTF-8"
+			doc:name="Transform from outer to inner" xsl-file="transform-outer2inner.xslt"
+			encoding="UTF-8" returnClass="java.lang.String" />
+
+		<!-- The call to the inner service is done in a subflow since we want the 
+			response to go back through the -->
+		<!-- cxf:proxy-client before we transform it -->
+		<flow-ref name="CallInnerEndpoint" />
+
+		<!-- Transform back to outer format. -->
+		<!-- Again remember to set returnClass="java.lang.String" or you will bet 
+			a byte array -->
+		<mulexml:xslt-transformer
+			maxIdleTransformers="2" maxActiveTransformers="5" outputEncoding="UTF-8"
+			doc:name="Transform from inner response to outer response" xsl-file="transform-inner2outer.xslt"
+			encoding="UTF-8" returnClass="java.lang.String" />
+	</flow>
+
+	<!-- Sub-flow to return the body part of the response from the inner service -->
+	<flow name="CallInnerEndpoint">
+		<cxf:proxy-client payload="body"
+			enableMuleSoapHeaders="true" />
+		<!-- Call the inner SOAP endpoint, in this case it is a mock service running 
+			in soapUI (see src/test/resources/innerservice.wsdl) -->
+		<http:outbound-endpoint exchange-pattern="request-response"
+			address="http://localhost:8088/mockEchoBinding" doc:name="HTTP"
+			transformer-refs="SetSOAPheaders" />
+	</flow>
 </mule>

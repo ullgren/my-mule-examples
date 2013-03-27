@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:pattern="http://www.mulesoft.org/schema/mule/pattern"
+	xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.3.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd 
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd 
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
+http://www.mulesoft.org/schema/mule/pattern http://www.mulesoft.org/schema/mule/pattern/current/mule-pattern.xsd">
+
+	<!-- Transformer used by the web-service-proxy pattern above -->
+	<mulexml:xslt-transformer name="proxy-transformer"
+		maxIdleTransformers="2" maxActiveTransformers="5" outputEncoding="UTF-8"
+		doc:name="Transform from outer to inner and back again, used by the pattern flow"
+		xsl-file="transform-pattern.xslt" encoding="UTF-8" returnClass="java.lang.String" />
+
+	<!-- WS-SOAP proxy with payload transformation using Mule patterns -->
+	<pattern:web-service-proxy name="SOAP2SOAPFlow3"
+		doc:name="SOAP2SOAP proxy using pattern" inboundAddress="http://localhost:8083/GreeterResponderService"
+		outboundAddress="http://localhost:8088/mockEchoBinding"
+		wsdlFile="schemas/interactions/GreeterInteraction/GreeterInteraction_1.0.wsdl"
+		transformer-refs="proxy-transformer" responseTransformer-refs="proxy-transformer" />
+
+	<!-- A second WS-SOAP proxy but now without any transformation -->
+	<pattern:web-service-proxy name="SOAP2SOAPFlow4"
+		doc:name="SOAP2SOAP proxy not changing contract" inboundAddress="http://localhost:8084/echoService"
+		outboundAddress="http://localhost:8088/mockEchoBinding" />
+</mule>
