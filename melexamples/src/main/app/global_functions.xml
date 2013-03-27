@@ -6,27 +6,30 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
 http://www.mulesoft.org/schema/mule/tcp http://www.mulesoft.org/schema/mule/tcp/current/mule-tcp.xsd ">
     
-    <configuration>
+    <configuration doc:name="Configuration">
       <expression-language autoResolveVariables="false">
-         <import class="java.lang.String" /> <!-- We actually do not need to import java.lang classes but this is done here to show that you can do imports -->
+         <import class="javax.xml.bind.DatatypeConverter" /> 
          <global-functions>
-            def transformIsoPayloadToUtf8() { new String(payload, "ISO-8859-1") }
+            def transformBytesToString() { DatatypeConverter.printHexBinary(payload) }
          </global-functions>
       </expression-language>
     </configuration>
 
     <!-- Simply use Java inline directly in the in the code. -->
     <!-- This works but is very verbose and there will be redundant code, especially if we have more complex transformations.  -->
-    <flow name="IconvWithoutGlobalFunction" doc:name="Global_FunctionsFlow1">
+    <flow name="FilterBytesAsHexWithoutGlobalFunction" doc:name="FilterBytesAsHexWithoutGlobalFunction">
         <vm:inbound-endpoint exchange-pattern="request-response" path="start1" doc:name="VM"/>
-        <echo-component doc:name="Echo"/>
-        <set-payload value="#[new String(payload, &quot;ISO-8859-1&quot;)]" doc:name="Set Payload as UTF-8"/>
+        <logger message="Payload is #[payload] which translates into #[transformBytesToString()]" doc:name="Logger" level="INFO"/>
+        <expression-filter expression="#[javax.xml.bind.DatatypeConverter.printHexBinary(payload).equals('7F000001')]" doc:name="Expression"/>
+        <set-payload value="Success" doc:name="Set payload to Success"/>
     </flow>
     
     <!-- To reduce redundant code we can define a global function and use it instead. -->
-    <flow name="IconvWithGlobalFunction" doc:name="Global_FunctionsFlow1">
+    <!-- This also helps readability of the XML -->
+    <flow name="FilterBytesAsHexWithGlobalFunction" doc:name="FilterBytesAsHexWithGlobalFunction">
         <vm:inbound-endpoint exchange-pattern="request-response" path="start2" doc:name="VM"/>
-        <echo-component doc:name="Echo"/>
-        <set-payload value="#[transformIsoPayloadToUtf8()]" doc:name="Set Payload as UTF-8"/>
+        <logger message="Payload is #[payload] which translates into #[transformBytesToString()]" doc:name="Logger" level="INFO"/>
+        <expression-filter expression="#[transformBytesToString().equals('7F000001')]" doc:name="Expression"/>
+        <set-payload value="Success" doc:name="Set payload to Success"/>
     </flow>
 </mule>

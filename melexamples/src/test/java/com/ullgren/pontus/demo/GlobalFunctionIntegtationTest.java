@@ -11,14 +11,8 @@ import org.mule.tck.junit4.FunctionalTestCase;
 
 public class GlobalFunctionIntegtationTest extends  FunctionalTestCase {
 
-	byte[] payload = { 'D', 'e', 't', 't', 'a', ' ', (byte)0xE4, 'r', ' ', 'e', 'n', ' ', 'm', (byte)0xE4, 
-            'n', 'g', 'd', ' ', 't', 'e', 'c', 'k', 'e', 'n', ' ', 'i', ' ', 'I', 
-            'S', 'O', ' ', 'e', 'n', 'c', 'o', 'd', 'i', 'n', 'g', '.', ' ', (byte)0xF6, 
-            (byte)0xE4, (byte)0xE5, (byte)0xC5, (byte)0xC4, (byte)0xD6, '$', (byte)0xA3
-    };
-	// Swedish sentence followed by a bunch of non-lating chars.
-	// Translated to english: "This is a bunch of chars in ISO encoding. öäåÅÄÖ$£"
-	String expectedResult = "Detta är en mängd tecken i ISO encoding. öäåÅÄÖ$£";
+	byte[] payload = { 0x7F, 0x0, 0x0, 0x1 };
+	String expectedResult = "Success";
 	
 	@Override
 	protected String getConfigResources() {
@@ -45,5 +39,4 @@ public class GlobalFunctionIntegtationTest extends  FunctionalTestCase {
 	    MuleMessage result = client.send("vm://start2", payload, properties);
 	    assertEquals(expectedResult, result.getPayloadAsString());
 	}
-
 }
