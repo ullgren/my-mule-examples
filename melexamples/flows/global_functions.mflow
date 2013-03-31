@@ -8,7 +8,7 @@
             <property value="1" name="auxiliary;index"/>
         </properties>
     </global-element>
-    <flow SubFlow="false" name="FilterBytesAsHexWithoutGlobalFunction" entity-id="597906e9-9ac6-4a2c-8c31-fc5639e96169">
+    <flow SubFlow="false" name="FilterBytesAsHexWithoutGlobalFunction" entity-id="10d0ecc6-17b6-4154-bdeb-abed0480d4b2">
         <properties>
             <property name="processingStrategy2"/>
             <property name="processingStrategy"/>
@@ -25,7 +25,7 @@
                     <property value="one-way" name="exchange-pattern"/>
                     <property value="request-response" name="exchange-pattern"/>
                     <property value="6" name="auxiliary;index"/>
-                    <property value="start1" name="path"/>
+                    <property value="FilterBytesAsHexWithoutGlobalFunction" name="path"/>
                     <property value="6" name="auxiliary;index"/>
                     <property value="6" name="auxiliary;index"/>
                     <property value="6" name="auxiliary;index"/>
@@ -48,9 +48,9 @@
                     <property value="6" name="auxiliary;index"/>
                 </properties>
             </endpoint>
-            <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger" entity-id="Logger#1">
+            <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Log byte array in a more readable form." entity-id="Logger#1">
                 <properties>
-                    <property value="Payload is #[payload] which translates into #[transformBytesToString()]" name="message"/>
+                    <property value="Payload is #[payload] which translates into #[javax.xml.bind.DatatypeConverter.printHexBinary(payload)]" name="message"/>
                     <property value="INFO" name="level"/>
                     <property name="category"/>
                     <property value="7" name="auxiliary;index"/>
@@ -58,10 +58,10 @@
                     <property value="7" name="auxiliary;index"/>
                 </properties>
             </pattern>
-            <pattern type="org.mule.tooling.ui.modules.core.filter.Expression" name="Expression" entity-id="Expression#1">
+            <pattern type="org.mule.tooling.ui.modules.core.filter.Expression" name="Filter using a String comparison" entity-id="Expression#1">
                 <properties>
                     <property name="evaluator"/>
-                    <property value="#[javax.xml.bind.DatatypeConverter.printHexBinary(payload).equals('7F000001')]" name="expression"/>
+                    <property value="#[javax.xml.bind.DatatypeConverter.printHexBinary(payload) == '7F000001']" name="expression"/>
                     <property name="customEvaluator"/>
                     <property name="nullReturnsTrue"/>
                     <property value="8" name="auxiliary;index"/>
@@ -69,83 +69,67 @@
                     <property value="8" name="auxiliary;index"/>
                 </properties>
             </pattern>
-            <pattern type="http://www.mulesoft.org/schema/mule/core/set-payload" name="Set payload to Success" entity-id="Set Payload#1">
-                <properties>
-                    <property value="Success" name="value"/>
-                    <property value="9" name="auxiliary;index"/>
-                    <property value="9" name="auxiliary;index"/>
-                    <property value="9" name="auxiliary;index"/>
-                </properties>
-            </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="FilterBytesAsHexWithGlobalFunction" entity-id="a1f596d7-d095-408d-ad65-7fc0b106b6cc">
+    <flow SubFlow="false" name="FilterBytesAsHexWithGlobalFunction" entity-id="aa6c85ec-0f2a-47b5-a64c-3c40d67b75aa">
         <properties>
             <property name="processingStrategy2"/>
             <property name="processingStrategy"/>
-            <property value="10" name="auxiliary;index"/>
+            <property value="9" name="auxiliary;index"/>
             <property name="bussinessEventsLabel"/>
             <property name="tracking:enable-default-events"/>
-            <property value="10" name="auxiliary;index"/>
-            <property value="10" name="auxiliary;index"/>
-            <property value="10" name="auxiliary;index"/>
+            <property value="9" name="auxiliary;index"/>
+            <property value="9" name="auxiliary;index"/>
+            <property value="9" name="auxiliary;index"/>
         </properties>
         <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#2">
             <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM" entity-id="VM#2">
                 <properties>
                     <property value="one-way" name="exchange-pattern"/>
                     <property value="request-response" name="exchange-pattern"/>
-                    <property value="11" name="auxiliary;index"/>
-                    <property value="start2" name="path"/>
-                    <property value="11" name="auxiliary;index"/>
-                    <property value="11" name="auxiliary;index"/>
-                    <property value="11" name="auxiliary;index"/>
+                    <property value="10" name="auxiliary;index"/>
+                    <property value="FilterBytesAsHexWithGlobalFunction" name="path"/>
+                    <property value="10" name="auxiliary;index"/>
+                    <property value="10" name="auxiliary;index"/>
+                    <property value="10" name="auxiliary;index"/>
                     <property name="businessEventsLabel"/>
                     <property name="tracking:enable-default-events"/>
-                    <property value="11" name="auxiliary;index"/>
+                    <property value="10" name="auxiliary;index"/>
                     <property name="address"/>
                     <property name="responseTimeout"/>
                     <property name="encoding"/>
                     <property name="disableTransportTransformer"/>
                     <property name="mimeType"/>
-                    <property value="11" name="auxiliary;index"/>
-                    <property value="11" name="auxiliary;index"/>
+                    <property value="10" name="auxiliary;index"/>
+                    <property value="10" name="auxiliary;index"/>
                     <property name="connector-ref"/>
                     <property name="ref"/>
                     <property name="transformer-refs"/>
                     <property name="responseTransformer-refs"/>
-                    <property value="11" name="auxiliary;index"/>
-                    <property value="11" name="auxiliary;index"/>
-                    <property value="11" name="auxiliary;index"/>
+                    <property value="10" name="auxiliary;index"/>
+                    <property value="10" name="auxiliary;index"/>
+                    <property value="10" name="auxiliary;index"/>
                 </properties>
             </endpoint>
-            <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Logger" entity-id="Logger#2">
+            <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Log byte array in a more readable form." entity-id="Logger#2">
                 <properties>
                     <property value="Payload is #[payload] which translates into #[transformBytesToString()]" name="message"/>
                     <property value="INFO" name="level"/>
                     <property name="category"/>
-                    <property value="12" name="auxiliary;index"/>
-                    <property value="12" name="auxiliary;index"/>
-                    <property value="12" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
+                    <property value="11" name="auxiliary;index"/>
                 </properties>
             </pattern>
-            <pattern type="org.mule.tooling.ui.modules.core.filter.Expression" name="Expression" entity-id="Expression#2">
+            <pattern type="org.mule.tooling.ui.modules.core.filter.Expression" name="Filter using a String comparison" entity-id="Expression#2">
                 <properties>
                     <property name="evaluator"/>
-                    <property value="#[transformBytesToString().equals('7F000001')]" name="expression"/>
+                    <property value="#[transformBytesToString() == '7F000001']" name="expression"/>
                     <property name="customEvaluator"/>
                     <property name="nullReturnsTrue"/>
-                    <property value="13" name="auxiliary;index"/>
-                    <property value="13" name="auxiliary;index"/>
-                    <property value="13" name="auxiliary;index"/>
-                </properties>
-            </pattern>
-            <pattern type="http://www.mulesoft.org/schema/mule/core/set-payload" name="Set payload to Success" entity-id="Set Payload#2">
-                <properties>
-                    <property value="Success" name="value"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
-                    <property value="14" name="auxiliary;index"/>
+                    <property value="12" name="auxiliary;index"/>
+                    <property value="12" name="auxiliary;index"/>
+                    <property value="12" name="auxiliary;index"/>
                 </properties>
             </pattern>
         </lane>

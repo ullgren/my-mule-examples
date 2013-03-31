@@ -18,18 +18,16 @@ http://www.mulesoft.org/schema/mule/tcp http://www.mulesoft.org/schema/mule/tcp/
     <!-- Simply use Java inline directly in the in the code. -->
     <!-- This works but is very verbose and there will be redundant code, especially if we have more complex transformations.  -->
     <flow name="FilterBytesAsHexWithoutGlobalFunction" doc:name="FilterBytesAsHexWithoutGlobalFunction">
-        <vm:inbound-endpoint exchange-pattern="request-response" path="start1" doc:name="VM"/>
-        <logger message="Payload is #[payload] which translates into #[transformBytesToString()]" doc:name="Logger" level="INFO"/>
-        <expression-filter expression="#[javax.xml.bind.DatatypeConverter.printHexBinary(payload).equals('7F000001')]" doc:name="Expression"/>
-        <set-payload value="Success" doc:name="Set payload to Success"/>
+        <vm:inbound-endpoint exchange-pattern="request-response" path="FilterBytesAsHexWithoutGlobalFunction" doc:name="VM"/>
+        <logger message="Payload is #[payload] which translates into #[javax.xml.bind.DatatypeConverter.printHexBinary(payload)]" doc:name="Log byte array in a more readable form." level="INFO"/>
+        <expression-filter expression="#[javax.xml.bind.DatatypeConverter.printHexBinary(payload) == '7F000001']" doc:name="Filter using a String comparison"/>
     </flow>
     
     <!-- To reduce redundant code we can define a global function and use it instead. -->
     <!-- This also helps readability of the XML -->
     <flow name="FilterBytesAsHexWithGlobalFunction" doc:name="FilterBytesAsHexWithGlobalFunction">
-        <vm:inbound-endpoint exchange-pattern="request-response" path="start2" doc:name="VM"/>
-        <logger message="Payload is #[payload] which translates into #[transformBytesToString()]" doc:name="Logger" level="INFO"/>
-        <expression-filter expression="#[transformBytesToString().equals('7F000001')]" doc:name="Expression"/>
-        <set-payload value="Success" doc:name="Set payload to Success"/>
+        <vm:inbound-endpoint exchange-pattern="request-response" path="FilterBytesAsHexWithGlobalFunction" doc:name="VM"/>
+        <logger message="Payload is #[payload] which translates into #[transformBytesToString()]" doc:name="Log byte array in a more readable form." level="INFO"/>
+        <expression-filter expression="#[transformBytesToString() == '7F000001']" doc:name="Filter using a String comparison"/>
     </flow>
 </mule>
