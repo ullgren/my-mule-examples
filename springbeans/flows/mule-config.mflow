@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mule-configuration xmlns="http://www.mulesoft.com/tooling/messageflow" name="mule-config">
+    <flow SubFlow="false" name="LogPayload" entity-id="133305a3-cfbb-44f8-99a4-985eacccc6b7">
+        <properties>
+            <property name="updated"/>
+            <property value="" name="processingStrategy2"/>
+            <property value="" name="bussinessEventsLabel"/>
+            <property value="1" name="auxiliary;index"/>
+            <property value="true" name="auxiliary;erased;processingStrategy2"/>
+            <property value="false" name="tracking:enable-default-events"/>
+            <property-collection name="@http://www.mulesoft.org/schema/mule/ee/tracking/transaction;1671183368"/>
+        </properties>
+        <description></description>
+        <lane isChoiceOtherwiseLane="false" index="0" hadOnlyOneElement="false" entity-id="compartment-lane#1">
+            <graphicalData height="0" width="0" y="0" x="0"/>
+            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/vm/endpoint" name="VM" entity-id="VM#1">
+                <graphicalData height="0" width="0" y="0" x="0"/>
+                <properties>
+                    <property name="businessEventsLabel"/>
+                    <property name="disableTransportTransformer"/>
+                    <property value="request-response" name="exchange-pattern"/>
+                    <property name="tracking:enable-default-events"/>
+                    <property name="ref"/>
+                    <property name="transformer-refs"/>
+                    <property name="address"/>
+                    <property value="Test1" name="path"/>
+                    <property name="encoding"/>
+                    <property name="responseTransformer-refs"/>
+                    <property value="2" name="auxiliary;index"/>
+                    <property name="responseTimeout"/>
+                    <property name="mimeType"/>
+                    <property name="connector-ref"/>
+                </properties>
+            </endpoint>
+            <pattern type="http://www.mulesoft.org/schema/mule/core/logger" name="Log payload" entity-id="Logger#1">
+                <graphicalData height="0" width="0" y="0" x="0"/>
+                <properties>
+                    <property value="Message payload is #[payload]. " name="message"/>
+                    <property name="category"/>
+                    <property value="INFO" name="level"/>
+                    <property value="3" name="auxiliary;index"/>
+                </properties>
+            </pattern>
+        </lane>
+    </flow>
+</mule-configuration>

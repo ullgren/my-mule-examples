@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mule-project xmlns="http://www.mulesoft.com/tooling/project" runtimeId="org.mule.tooling.server.3.3.1.CE">
+    <name>SpringBeans</name>
+    <description>This project contains examples on how to use Spring beans within a Mule application.</description>
+</mule-project>
