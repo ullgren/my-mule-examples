@@ -1,0 +1,17 @@
+<projectDescription>
+  <name>recipientlist</name>
+  <comment></comment>
+  <projects/>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+    <buildCommand>
+      <name>org.mule.tooling.core.muleBuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+    <nature>org.mule.tooling.core.muleNature</nature>
+  </natures>
+</projectDescription>

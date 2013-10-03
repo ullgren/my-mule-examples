@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+
+    <!-- A simple Flow for examples -->
+    
+    <flow name="recipientListFlow1" doc:name="recipientListFlow1">
+        <vm:inbound-endpoint exchange-pattern="request-response" path="Test1" doc:name="VM"/>
+        <logger level="INFO" message="Message recived in recipientListFlow1 #[payload]" doc:name="Logger"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <recipient-list expression="#[message.inboundProperties['dynamicendpoints']]" enableCorrelation="ALWAYS"/>
+    </flow>
+    
+    <flow name="recipientListFlow2" doc:name="recipientListFlow2">
+    	<vm:inbound-endpoint exchange-pattern="one-way" path="Test2" doc:name="VM"/>
+    	<logger level="INFO" message="Message recived in recipientListFlow2 #[payload]" doc:name="Logger"/>
+    	<set-payload value="Flow 2" doc:name="Set Payload"/>
+    	<vm:outbound-endpoint path="result2"/>
+    </flow>
+    
+     <flow name="recipientListFlow3" doc:name="recipientListFlow3">
+    	<vm:inbound-endpoint exchange-pattern="one-way" path="Test3" doc:name="VM"/>
+    	<logger level="INFO" message="Message recived in recipientListFlow3 #[payload]" doc:name="Logger"/>
+    	<set-payload value="Flow 3" doc:name="Set Payload"/>
+    	<vm:outbound-endpoint path="result3"/>
+    </flow>
+</mule>
