@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" 
+     xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" 
+     xmlns:spring="http://www.springframework.org/schema/beans"
+     xmlns:mule-ss="http://www.mulesoft.org/schema/mule/spring-security"
+     xmlns:spring-security="http://www.springframework.org/schema/security"
+     version="CE-3.4.0" 
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd 
+     http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd 
+     http://www.mulesoft.org/schema/mule/spring-security http://www.mulesoft.org/schema/mule/spring-security/3.1/mule-spring-security.xsd 
+     http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
+     http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+     
+    <!--  Setting up Spring Security to use a in-memory user service -->
+    <spring:beans>
+           <spring-security:authentication-manager alias="authenticationManager">
+                 <spring-security:authentication-provider>
+                 	<spring-security:user-service id="authService">
+                 		<spring-security:user name="user" password="P@ssword" authorities="ROLE_USER"/>
+                 		<spring-security:user name="guest" password="guest" authorities="ROLE_GUEST"/>
+                 	</spring-security:user-service>
+                 </spring-security:authentication-provider>
+           </spring-security:authentication-manager>
+     </spring:beans>
+     <!-- Mule Spring Security Manager -->
+     <mule-ss:security-manager>
+           <mule-ss:delegate-security-provider
+                 name="memory-provider" delegate-ref="authenticationManager" />
+     </mule-ss:security-manager>
+
+    <flow name="InboundHTTPBasicAuthFlow" doc:name="Flow showing how to protect a inbound HTTP endpoint with BASIC AUTH">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" doc:name="HTTP" path="secured">
+        	  <mule-ss:http-security-filter  realm="Enter valid user credentials" securityProviders="memory-provider"/>
+        	  <mule-ss:authorization-filter requiredAuthorities="ROLE_USER"/>
+        </http:inbound-endpoint>
+        <set-payload value="You have successfully logged in!"/>
+        <http:response-builder contentType="text/plain" status="200" />
+    </flow>
+</mule>
