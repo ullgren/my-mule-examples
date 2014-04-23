@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" 
+xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns:http="http://www.mulesoft.org/schema/mule/http" 
+xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" 
+xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.3.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
+
+	<flow name="SOAP2HTTPFlow" doc:name="SOAP2HTTPFlow" doc:description="This flow exposes a extrenal SOAP webservice and then proxies the request, to an inner HTTP only service.">
+		<!-- Inbound -->
+		<http:inbound-endpoint exchange-pattern="request-response"
+			host="localhost" port="8084" path="GreeterResponderService" doc:name="HTTP" />
+		<logger level="INFO" message="SOAP2SOAPFlow2" doc:name="Logger"/>
+		<cxf:proxy-service namespace="urn:greeter:GreeterResponder:1"
+			service="GreeterResponderService" payload="body"
+			wsdlLocation="schemas/interactions/GreeterInteraction/GreeterInteraction_1.0.wsdl"
+			enableMuleSoapHeaders="false" doc:name="SOAP" />
+        <mulexml:dom-to-xml-transformer doc:name="DOM to XML"/>
+		<logger level="ERROR" doc:name="Logger"/>
+		<logger level="ERROR" message="Payload is #[payload]" doc:name="Logger"/>
+		
+		
+		
+		<http:outbound-endpoint exchange-pattern="request-response"
+			address="http://localhost:8088/mockEchoBinding" doc:name="HTTP" />
+			
+	</flow>
+
+</mule>
