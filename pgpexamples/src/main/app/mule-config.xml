@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" 
+	xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.4.0"
+	xmlns:pgp="http://www.mulesoft.org/schema/mule/pgp" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd 
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd 
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd 
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
+http://www.mulesoft.org/schema/mule/pgp     http://www.mulesoft.org/schema/mule/pgp/current/mule-pgp.xsd">
+
+	<spring:beans>
+	    <spring:bean id="pgpKeyManager" class="org.mule.module.pgp.PGPKeyRingImpl" init-method="initialise">
+	        <spring:property name="publicKeyRingFileName" value="pubring.gpg"/>
+	        <spring:property name="secretKeyRingFileName" value="secring.gpg"/>
+	        <spring:property name="secretAliasId" value="-3465398204868877747"/>
+<!-- 	        <spring:property name="secretAliasId" value="7487042026319332280"/> -->
+	        <spring:property name="secretPassphrase" value="changeme"/>
+	    </spring:bean>
+	    <spring:bean id="pgpKeyManager2" class="org.mule.module.pgp.PGPKeyRingImpl" init-method="initialise">
+	        <spring:property name="publicKeyRingFileName" value="pubring.gpg"/>
+	        <spring:property name="secretKeyRingFileName" value="secring.gpg"/>
+<!-- 	        <spring:property name="secretAliasId" value="-3465398204868877747"/> -->
+	        <spring:property name="secretAliasId" value="7487042026319332280"/>
+	        <spring:property name="secretPassphrase" value="changeme"/>
+	    </spring:bean>
+    	<spring:bean id="credentialAccessor" class="org.mule.security.MuleHeaderCredentialsAccessor"/>
+	</spring:beans>
+	
+	<pgp:security-manager>
+	    <pgp:security-provider name="pgpSecurityProvider" keyManager-ref="pgpKeyManager"/>
+        <pgp:keybased-encryption-strategy
+        	name="keyBasedEncryptionStrategy"
+        	keyManager-ref="pgpKeyManager"
+        	credentialsAccessor-ref="credentialAccessor"/>
+	</pgp:security-manager>
+
+    <!-- A simple Flows for examples -->
+    
+    <flow name="EncryptPayload" doc:name="Encrypt message payload">
+        <vm:inbound-endpoint exchange-pattern="request-response" path="Test1" doc:name="VM"/>
+        <encrypt-transformer name="pgpEncrypt" strategy-ref="keyBasedEncryptionStrategy" />
+        <logger message="Encrypted message payload is #[payload]. " doc:name="Log payload" level="INFO"/>
+    </flow>
+    
+    <flow name="DecryptPayload" doc:name="Decrypt message payload">
+        <vm:inbound-endpoint exchange-pattern="request-response" path="Test2" doc:name="VM"/>
+        <decrypt-transformer name="pgpDecrypt" strategy-ref="keyBasedEncryptionStrategy" />
+        <logger message="Decrypted message payload is #[payload]. " doc:name="Log payload" level="INFO"/>
+    </flow>
+    
+    <flow name="ThereAndBackAgain" doc:name="Encrypt and then decrypt message payload">
+        <vm:inbound-endpoint exchange-pattern="request-response" path="Test3" doc:name="VM"/>
+        <encrypt-transformer name="pgpEncrypt2" strategy-ref="keyBasedEncryptionStrategy" />
+        <decrypt-transformer name="pgpDecrypt2" strategy-ref="keyBasedEncryptionStrategy" />
+        <logger message="Encrypted and decrypted message payload is #[payload]. " doc:name="Log payload" level="INFO"/>
+    </flow>
+</mule>
