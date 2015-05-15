@@ -15,14 +15,6 @@ http://www.mulesoft.org/schema/mule/pgp     http://www.mulesoft.org/schema/mule/
 	    <spring:bean id="pgpKeyManager" class="org.mule.module.pgp.PGPKeyRingImpl" init-method="initialise">
 	        <spring:property name="publicKeyRingFileName" value="pubring.gpg"/>
 	        <spring:property name="secretKeyRingFileName" value="secring.gpg"/>
-	        <spring:property name="secretAliasId" value="-3465398204868877747"/>
-<!-- 	        <spring:property name="secretAliasId" value="7487042026319332280"/> -->
-	        <spring:property name="secretPassphrase" value="changeme"/>
-	    </spring:bean>
-	    <spring:bean id="pgpKeyManager2" class="org.mule.module.pgp.PGPKeyRingImpl" init-method="initialise">
-	        <spring:property name="publicKeyRingFileName" value="pubring.gpg"/>
-	        <spring:property name="secretKeyRingFileName" value="secring.gpg"/>
-<!-- 	        <spring:property name="secretAliasId" value="-3465398204868877747"/> -->
 	        <spring:property name="secretAliasId" value="7487042026319332280"/>
 	        <spring:property name="secretPassphrase" value="changeme"/>
 	    </spring:bean>
