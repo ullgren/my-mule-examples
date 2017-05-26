@@ -1,45 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <mule xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd 
-http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd 
-http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd 
-http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd ">
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.6.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
 
     <!-- Some simple MEL examples -->
     
     <!-- Using MEL to log parts of the message -->
-    <flow name="LogPayload" doc:name="Log message payload using MEL">
+    <flow name="LogPayload" >
         <vm:inbound-endpoint exchange-pattern="request-response" path="LogPayload" doc:name="VM"/>
         <set-session-variable variableName="today" value="#[function:datestamp:dd-MM-yyyy]"  doc:name="Set todays date" />
         <logger message="Message payload is #[payload]. The session variable 'today' contains #[sessionVars['today']]" doc:name="Log payload and session variables." level="INFO"/>
-        <expression-filter expression="#[payload =='Hello World!']" />
+        <expression-filter expression="#[payload =='Hello World!']" doc:name="Expression"/>
     </flow>
 
-    <flow name="ExtractDataXpathFunction" doc:name="Extract data using MELs xpath function">
+    <flow name="ExtractDataXpathFunction" >
         <vm:inbound-endpoint exchange-pattern="request-response" path="ExtractDataXpathFunction" doc:name="VM"/>
         <logger message="Initial payload is #[payload]" doc:name="Log initial payload" level="INFO"/>
         <set-payload value="#[xpath('/order/@id')]" doc:name="Extract the @id attribute from the order element"/>
         <logger doc:name="Log extracted payload" level="INFO"/>
     </flow>
     
-    <flow name="ExtractDataXpathEvaluator" doc:name="Extract data using MELs xpath function">
+    <flow name="ExtractDataXpathEvaluator" >
         <vm:inbound-endpoint exchange-pattern="request-response" path="ExtractDataXpathEvaluator" doc:name="VM"/>
         <logger message="Initial payload is #[payload]" doc:name="Log initial payload" level="INFO"/>
         <set-payload value="#[xpath:/order/@id]" doc:name="Extract the @id attribute from the order element"/>
         <logger doc:name="Log extracted payload" level="INFO"/>
     </flow>
     
-    <flow name="XpathVsXPath" doc:name="Extract data using MELs xpath function">
+    <flow name="XpathVsXPath" >
         <vm:inbound-endpoint exchange-pattern="request-response" path="XpathVsXPath" doc:name="VM"/>
         <logger message="Initial payload is #[payload]" doc:name="Log initial payload" level="INFO"/>
         <!-- The xpath() function returns a org.dom4j.tree.DefaultAttribute so we need to call the getValue() method. -->
         <!-- However we can then use MEL operators i.e. == for equals -->
-        <expression-filter expression="#[xpath('/order/@id').getValue() == '123']" />
+        <expression-filter expression="#[xpath('/order/@id').getValue() == '123']" doc:name="Expression"/>
         <!-- The xpath expression evaluator will evaluate the rest of the expression as a xpath expression.  -->
-        <!-- So we need to use xpath operators. -->
-        <expression-filter expression="#[xpath:/order/@id = '123']" />
-        
+        <!-- So we need to use xpath operators, that is '=' for equals. -->
+        <expression-filter expression="#[xpath:/order/@id = '123']" doc:name="Expression"/>        
     </flow>
+    
+     <flow name="PlayWithNullPayload" >
+        <vm:inbound-endpoint exchange-pattern="request-response" path="PlayWithNullPayload" doc:name="VM"/>
+        <logger message="Initial payload is #[payload]" doc:name="Log initial payload" level="INFO"/>
+        <logger message="Is initial Payload NullPayload #[payload is org.mule.transport.NullPayload]" doc:name="Log to see if payload is NullPayload" level="INFO"/>
+        <logger message="Is initial NullPayload empty #[payload == empty]" doc:name="Log to see if payload is empty" level="INFO"/>
+        <set-payload value="#[payload is org.mule.transport.NullPayload ? '':payload]" doc:name="Null Check payload" />
+    </flow>
+    
+    <flow name="SetInboundAsPayload" >
+        <vm:inbound-endpoint exchange-pattern="request-response" path="SetInboundAsPayload" doc:name="VM"/>
+        <logger message="Initial payload is #[payload] and inbound property in is #[message.inboundProperties.'in']" doc:name="Log initial payload and property" level="INFO"/>        
+        <set-payload value="#[message.inboundProperties.'in' == empty?'Please set the in header':message.inboundProperties.'in']" doc:name="Set payload to in header if it exists" />
+    </flow>
+    
+    <flow name="MergeTwoProperties" >
+        <vm:inbound-endpoint exchange-pattern="request-response" path="MergeTwoProperties" doc:name="VM"/>
+        <expression-component doc:name="Expression"><![CDATA[message.outboundProperties.resultVar = new java.util.HashSet();
+		message.outboundProperties.resultVar.addAll(message.inboundProperties.source1Var);
+		message.outboundProperties.resultVar.addAll(message.inboundProperties.source2Var);
+		return message;]]>
+		</expression-component>
+		<component class="melexamples.DoNothing"/>
+    </flow>
+    
     
 </mule>

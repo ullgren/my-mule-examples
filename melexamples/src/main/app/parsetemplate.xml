@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tcp="http://www.mulesoft.org/schema/mule/tcp" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" version="CE-3.3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd 
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd 
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
+http://www.mulesoft.org/schema/mule/tcp http://www.mulesoft.org/schema/mule/tcp/current/mule-tcp.xsd ">
+    
+    <!-- Testing parse template -->
+    <flow name="ParseTemplate" doc:name="ParseTemplate">
+        <vm:inbound-endpoint exchange-pattern="request-response" path="ParseTemplate" doc:name="VM"/>
+        <logger message="Payload is #[payload]]" doc:name="Log payload." level="INFO"/>
+        <parse-template location="resultXml.template" />
+    </flow>
+    
+    <!-- Testing parse template with loop -->
+    <flow name="ParseTemplateWithLoop" doc:name="ParseTemplate">
+        <vm:inbound-endpoint exchange-pattern="request-response" path="ParseTemplateWithLoop" doc:name="VM"/>
+        <logger message="Payload is #[payload]]" doc:name="Log payload." level="INFO"/>
+        <parse-template location="resultLoopXml.template" />
+    </flow>
+</mule>

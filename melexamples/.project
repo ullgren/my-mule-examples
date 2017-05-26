@@ -15,8 +15,14 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>org.mule.tooling.maven.mavenBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>org.mule.tooling.maven.mavenNature</nature>
 		<nature>org.mule.tooling.core.muleNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>

@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
@@ -81,5 +83,57 @@ public class SimpleMelIntegtationTest extends  FunctionalTestCase {
 	    assertEquals(NullPayload.class, result.getPayload().getClass());
 	    assertNull(result.getProperty("today", PropertyScope.SESSION));
 	    
+	}
+	
+	@Test
+	public void testSetInboundAsPayloadWithOutHeader() throws Exception 
+	{
+		MuleClient client = new MuleClient(muleContext);
+	    String payload = null;
+	    Map<String, Object> properties = null;
+	    MuleMessage result = client.send("vm://SetInboundAsPayload", payload, properties);
+	    assertEquals("Please set the in header", result.getPayloadAsString());
+	}
+	
+	@Test
+	public void testSetInboundAsPayloadWithHeader() throws Exception 
+	{
+		MuleClient client = new MuleClient(muleContext);
+	    String payload = null;
+	    Map<String, Object> properties = new HashMap<String, Object>();
+	    properties.put("in", "The header value");
+	    MuleMessage result = client.send("vm://SetInboundAsPayload", payload, properties);
+	    assertEquals("The header value", result.getPayloadAsString());
+	}
+	
+	@Test
+	public void testSetInboundAsPayloadWithEmptyHeader() throws Exception 
+	{
+		MuleClient client = new MuleClient(muleContext);
+	    String payload = null;
+	    Map<String, Object> properties = new HashMap<String, Object>();
+	    properties.put("in", "");
+	    MuleMessage result = client.send("vm://SetInboundAsPayload", payload, properties);
+	    assertEquals("Please set the in header", result.getPayloadAsString());
+	}
+	
+	@Test
+	public void testMergeTwoProperties() throws Exception 
+	{
+		MuleClient client = new MuleClient(muleContext);
+	    String payload = null;
+	    Map<String, Object> properties = new HashMap<String, Object>();
+	    properties.put("source1Var", new ArrayList<String>() {{
+	        add("1");
+	        add("2");
+	        add("3");
+	    }});
+	    properties.put("source2Var", new ArrayList<String>() {{
+	        add("2");
+	        add("3");
+	        add("4");
+	    }});
+	    MuleMessage result = client.send("vm://MergeTwoProperties", payload, properties);
+	    assertEquals("[3, 2, 1, 4]", result.getInboundProperty("resultVar").toString());
 	}
 }
