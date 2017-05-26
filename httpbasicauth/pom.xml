@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.ullgren.pontus.examples</groupId>
@@ -11,13 +11,15 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <mule.version>3.4.0</mule.version>
+    <mule.version>3.6.1</mule.version>
     <slf4j.version>1.6.1</slf4j.version>
     <eclipsePluginVersion>2.8</eclipsePluginVersion>
     <junit.version>4.9</junit.version>
     <mockobjects.version>0.09</mockobjects.version>
     <java.version>1.6</java.version>
-  </properties>
+    <munit.version>1.0.0</munit.version>
+    <mule.munit.support.version>3.6.0</mule.munit.support.version>
+    </properties>
   <dependencies>
     <!-- Mule Dependencies -->
     <dependency>
@@ -108,7 +110,13 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
-  </dependencies>
+    <dependency>
+            <groupId>org.mule.modules</groupId>
+            <artifactId>mule-module-http</artifactId>
+            <version>${mule.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
   <build>
     <plugins>
       <plugin>
@@ -124,13 +132,8 @@
         <version>1.7</version>
         <extensions>true</extensions>
       </plugin>
-      <plugin>  
-	   <groupId>org.mule.tools</groupId> 
-	   <artifactId>studio-maven-plugin</artifactId> 
-	   <version>${mule.version}</version> 
-	</plugin>
-    </plugins>
-  </build>
+        </plugins>
+    </build>
   <!-- Added to get studio-maven-plugin to be able to use in mule studio -->
   <pluginRepositories>
      <pluginRepository>
